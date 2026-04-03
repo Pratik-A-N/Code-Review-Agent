@@ -20,7 +20,8 @@ Paste a GitHub Pull Request URL and get a structured code review in seconds. Thr
 **Screenshots**
 
 <!-- Add screenshots here -->
-_[screenshot placeholder]_
+<img width="1896" height="873" alt="image" src="https://github.com/user-attachments/assets/af12898f-6f75-4b39-8036-0a041f40a360" />
+
 
 ---
 

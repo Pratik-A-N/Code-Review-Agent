@@ -1,14 +1,21 @@
 # Code Review Agent
 
-> AI-powered GitHub PR analysis using a LangGraph multi-agent pipeline with real-time SSE progress.
+> AI-powered code review agent using LangGraph multi-agent architecture with real-time SSE streaming
 
-[Live Demo](https://your-url.onrender.com) · [API Docs](https://your-url.onrender.com/docs)
+**[Live Demo](https://code-review-agent-ui.onrender.com)** · [API Docs](https://code-review-agent-api-fdkw.onrender.com/docs)
 
 ---
 
 ## Overview
 
 Paste a GitHub Pull Request URL and get a structured code review in seconds. Three specialized AI agents (security, logic, style) analyze the diff in parallel and surface findings ranked by severity — with a baseline single-prompt mode for direct comparison.
+
+### Key Features
+
+- **Parallel multi-agent review** — Security, Logic, and Style agents run independently via LangGraph's Send API and fan back in to an aggregator
+- **Provider-agnostic LLM abstraction** — swap between Google Gemini and Groq via a factory pattern; no code changes needed
+- **Real-time streaming progress** — SSE delivers live node status events to the browser as each pipeline stage completes
+- **GitHub PR integration** — works with any public GitHub PR URL out of the box; supports private repos via `GITHUB_TOKEN`
 
 **Screenshots**
 
@@ -62,12 +69,12 @@ POST /api/review/async
 |---|---|
 | Backend framework | FastAPI |
 | Agent orchestration | LangGraph (StateGraph + Send API) |
-| LLM providers | Google Gemini 2.0 Flash / Groq (factory pattern) |
-| Real-time streaming | Server-Sent Events (`sse-starlette`) |
+| LLM providers | Gemini 2.0 Flash / Groq (provider-agnostic factory) |
+| Real-time streaming | Server-Sent Events (SSE) via `sse-starlette` |
 | Database | SQLite (auto-created, no migrations) |
 | Frontend | React 18 + Vite + Tailwind CSS |
 | Containerization | Docker + docker-compose |
-| Deployment | Render (Blueprint) |
+| Deployment | Render (API service + Static Site) |
 
 ---
 

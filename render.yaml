@@ -1,0 +1,48 @@
+
+# Render Blueprint — one-click deployment
+# https://render.com/docs/blueprint-spec
+#
+# Deploy steps:
+#   1. Push this repo to GitHub.
+#   2. Go to https://dashboard.render.com/blueprints and connect the repo.
+#   3. Set the secret env vars (GEMINI_API_KEY, GITHUB_TOKEN) in the Render dashboard
+#      after the initial deploy — they are marked sync: false below.
+#   4. After the backend deploys, copy its public URL (e.g. https://code-review-backend.onrender.com)
+#      and set VITE_API_URL and CORS_ORIGINS accordingly.
+
+services:
+  # ── Backend ──────────────────────────────────────────────────────────────
+  - type: web
+    name: code-review-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile.backend
+    dockerContext: .
+    plan: free
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false          # Set manually in Render dashboard
+      - key: GITHUB_TOKEN
+        sync: false          # Optional — needed only for private repos
+      - key: DATABASE_URL
+        value: sqlite:///./reviews.db
+      - key: CORS_ORIGINS
+        sync: false          # Set to your frontend URL after first deploy
+                             # e.g.: https://code-review-frontend.onrender.com
+
+  # ── Frontend (static site) ───────────────────────────────────────────────
+  - type: web
+    name: code-review-frontend
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
+    pullRequestPreviewsEnabled: true
+    routes:
+      # All non-asset paths → index.html (SPA routing)
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Point the frontend at the backend's public URL.
+      # After the backend deploys, update this to: https://code-review-backend.onrender.com
+      - key: VITE_API_URL
+        sync: false

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PRInput from "./components/PRInput";
 import ReviewDashboard from "./components/ReviewDashboard";
+import API_BASE_URL from "./config";
 
 // Node names as emitted by the backend pipeline
 const PIPELINE_NODES = [
@@ -32,7 +33,7 @@ export default function App() {
 
     try {
       // Start async review job
-      const startResp = await fetch(`/api/review/async?mode=${mode}`, {
+      const startResp = await fetch(`${API_BASE_URL}/api/review/async?mode=${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pr_url: prUrl }),
@@ -51,7 +52,7 @@ export default function App() {
 
       // Stream progress via SSE
       await new Promise((resolve, reject) => {
-        const es = new EventSource(`/api/review/${review_id}/stream`);
+        const es = new EventSource(`${API_BASE_URL}/api/review/${review_id}/stream`);
 
         es.onmessage = (event) => {
           let data;
@@ -93,7 +94,7 @@ export default function App() {
   }
 
   async function _fallbackSync(prUrl, mode) {
-    const resp = await fetch(`/api/review?mode=${mode}`, {
+    const resp = await fetch(`${API_BASE_URL}/api/review?mode=${mode}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pr_url: prUrl }),
